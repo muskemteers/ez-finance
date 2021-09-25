@@ -1,19 +1,7 @@
 from datetime import date, datetime
-from nsepy import get_history
-from pymongo import MongoClient
-
-
-class DBHandler:
-    client_ref = MongoClient()
-    db_ref = client_ref["stock_data"]
-    collection_historical_ref = db_ref["historical_stock_data"]
-    collection_stockinfo_ref = db_ref["stock_info"]
-
-    def get_coll_historical_ref(self):
-        return self.collection_historical_ref
-
-    def get_coll_stockinfo_ref(self):
-        return self.collection_stockinfo_ref
+from utils.utils_nsepy import get_historical_data
+from utils.utils_nsetools import get_all_stock_symbols
+from db import DBHandler
 
 
 class StockData:
@@ -30,15 +18,14 @@ class StockData:
         self.total_trading_days = len(historical_data)
         self.dates = historical_data.index
 
-    def show(self):
-        print("Symbol: ", self.stock_symbol)
-        print("Total Trading Days: ", self.total_trading_days)
+    def show_with_index(self, index):
+        print("Index: ", index, ", Symbol: ", self.stock_symbol)
 
     def upload_to_db(self):
         coll_ref = DBHandler().get_coll_historical_ref()
-        stocks_array = []
+        stockdata_to_upload = []
         for i in range(self.total_trading_days):
-            stocks_array.append(
+            stockdata_to_upload.append(
                 {
                     "trading_date": datetime(
                         self.dates[i].year, self.dates[i].month, self.dates[i].day
@@ -55,21 +42,30 @@ class StockData:
                     "volume": int(self.volume[i]),
                 }
             )
-        inserted_data = coll_ref.insert_many(stocks_array)
+        if len(stockdata_to_upload) == 0:
+            print(self.stock_symbol, " has no data in given interval")
+        else:
+            inserted_data = coll_ref.insert_many(stockdata_to_upload)
 
 
-def get_stock_data():
-    stock_symbols = ["SBIN", "HDFCBANK"]
-    start_date = date(2001, 1, 1)
-    end_date = date(2021, 9, 1)
+def update_stock_data():
+    stock_symbols = get_all_stock_symbols()
+    stock_symbols = []
+    start_date = date(2021, 1, 1)
+    end_date = date(2021, 9, 26)
+    print("Collecting Data for the interval: ", start_date, end_date)
+    count = 0
     for stock_symbol in stock_symbols:
-        historical_data = get_history(
-            symbol=stock_symbol, start=start_date, end=end_date
-        )
-        stock_data = StockData(stock_symbol, historical_data)
-        stock_data.show()
-        stock_data.upload_to_db()
+        if count > -1 and count < 10000:
+            historical_data = get_historical_data(stock_symbol, start_date, end_date)
+            stock_data = StockData(stock_symbol, historical_data)
+            del historical_data
+            stock_data.show_with_index(count)
+            stock_data.upload_to_db()
+        # if count == n:
+        #     exit()
+        count += 1
 
 
 if __name__ == "__main__":
-    get_stock_data()
+    update_stock_data()
