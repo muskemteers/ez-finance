@@ -10,9 +10,13 @@ class DBHandler:
     db_ref = client_ref["stock_data"]
     collection_historical_ref = db_ref["historical_stock_data"]
     collection_stockinfo_ref = db_ref["stock_info"]
+    collection_nse500_ref = db_ref["nse_500"]
 
     def get_coll_historical_ref(self):
         return self.collection_historical_ref
 
     def get_coll_stockinfo_ref(self):
         return self.collection_stockinfo_ref
+
+    def get_coll_nse500_ref(self):
+        return self.collection_nse500_ref
