@@ -50,13 +50,12 @@ class StockData:
 
 def update_stock_data():
     stock_symbols = get_all_stock_symbols()
-    stock_symbols = []
-    start_date = date(2021, 1, 1)
-    end_date = date(2021, 9, 26)
+    start_date = date(2021, 9, 25)
+    end_date = date(2021, 9, 29)
     print("Collecting Data for the interval: ", start_date, end_date)
     count = 0
     for stock_symbol in stock_symbols:
-        if count > -1 and count < 10000:
+        if count > 1709 and count < 10000:
             historical_data = get_historical_data(stock_symbol, start_date, end_date)
             stock_data = StockData(stock_symbol, historical_data)
             del historical_data
