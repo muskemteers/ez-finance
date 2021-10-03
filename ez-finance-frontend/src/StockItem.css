@@ -1,0 +1,8 @@
+.StockItem {
+	text-align: start;
+	padding: 6px;
+	font-size: 18px;
+	font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+	background-color: lightgray;
+	border-top: 1px solid black;
+}

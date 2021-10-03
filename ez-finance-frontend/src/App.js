@@ -1,25 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import StockList from "./StockList";
+import StockChart from "./StockChart";
+import { useState } from "react";
+
+const App = () => {
+	const [symbolName, setSymbolName] = useState("");
+	const changeStockSymbol = (symbolName) => {
+		setSymbolName(symbolName);
+	};
+	return (
+		<div className="App">
+			<div className="ma-44-flex">
+				<StockList onClick={changeStockSymbol} />
+				<StockChart symbolName={symbolName} />
+			</div>
+		</div>
+	);
+};
 
 export default App;
