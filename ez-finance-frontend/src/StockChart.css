@@ -1,4 +1,9 @@
 .StockChart {
-	width: 80%;
+	width: 80vw;
 	background-color: lightblue;
+}
+
+.apexchart {
+	position: absolute;
+	width: 90%;
 }

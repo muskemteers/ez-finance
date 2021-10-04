@@ -8,18 +8,42 @@ const StockChart = (props) => {
 		chart: {
 			background: "#f4f4f4",
 			foreColor: "#333",
+			toolbar: {
+				autoSelected: "pan",
+			},
 		},
 	};
 	const [series, setSeries] = useState([]);
 	useEffect(() => {
-		if (props.symbolName !== "") {
-			const env = "dev";
-			if (env == "dev") {
-				const candleData = [];
-				const movingAvgData = [];
-				candleData = [{ x: "02-01", y: [] }];
-			} else if (env == "prod") {
-				fetch(`http://localhost:9000/stocks/${props.symbolName}`)
+		if (props.selectedStockIndex !== -1) {
+			const env = "prod";
+			if (env === "dev") {
+				const candleData = [
+					{ x: "14-10", y: [2, 4, 1, 3] },
+					{ x: "15-10", y: [6, 8, 5, 7] },
+					{ x: "16-10", y: [7, 8, 5, 6] },
+					{ x: "17-10", y: [3, 4, 1, 2] },
+				];
+				const movingAvgData = [
+					{ x: "14-10", y: 2 },
+					{ x: "15-10", y: 4 },
+					{ x: "16-10", y: 3 },
+					{ x: "17-10", y: 2 },
+				];
+				setSeries([
+					{
+						name: "daily stock change",
+						type: "candlestick",
+						data: candleData,
+					},
+					{ name: "Moving Avg.(44)", type: "line", data: movingAvgData },
+				]);
+			} else if (env === "prod") {
+				fetch(
+					`http://localhost:9000/stocks/${
+						props.symbolList[props.selectedStockIndex].stock_symbol
+					}`
+				)
 					.then((res) => res.json())
 					.then(
 						(result) => {
@@ -29,12 +53,10 @@ const StockChart = (props) => {
 							if (result.historical_data.length > 43) {
 								for (let i = 0; i < 44; i++) {
 									movingAvg44 += result.historical_data[i].c;
-									if (i !== 0) {
-										movingAvgData.push({
-											x: result.historical_data[i].date.substr(5, 5),
-											y: result.historical_data[i].c,
-										});
-									}
+									movingAvgData.push({
+										x: result.historical_data[i].date.substr(5, 5),
+										y: result.historical_data[i].c,
+									});
 								}
 								for (let i = 44; i < result.historical_data.length; i++) {
 									movingAvg44 -= result.historical_data[i - 44].c;
@@ -72,9 +94,8 @@ const StockChart = (props) => {
 					);
 			}
 		}
-	}, [props.symbolName]);
-
-	if (props.symbolName === "")
+	}, [props.selectedStockIndex]);
+	if (props.selectedStockIndex === -1)
 		return (
 			<div className="StockChart" style={{ textAlign: "center" }}>
 				<h2>
@@ -84,21 +105,29 @@ const StockChart = (props) => {
 				</h2>
 			</div>
 		);
-	// else if (.length === 0) {
-	// 	return (
-	// 		<div className="StockChart" style={{ textAlign: "center" }}>
-	// 			<h2>No data found for this stock.</h2>
-	// 		</div>
-	// 	);
-	// }
-	else {
+	else if (series.length === 0) {
+		return (
+			<div className="StockChart" style={{ textAlign: "center" }}>
+				<h2>No data found for this stock.</h2>
+			</div>
+		);
+	} else {
 		return (
 			<div className="StockChart">
+				<h1
+					style={{
+						textAlign: "center",
+						margin: "5px 0px",
+					}}>
+					{props.symbolList.length > 0
+						? props.symbolList[props.selectedStockIndex].stock_name
+						: "No Stock Selected"}
+				</h1>
 				<Chart
+					className="apexchart"
 					options={options}
 					series={series}
 					type="candlestick"
-					width="95%"
 				/>
 			</div>
 		);

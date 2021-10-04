@@ -5,15 +5,27 @@ import StockChart from "./StockChart";
 import { useState } from "react";
 
 const App = () => {
-	const [symbolName, setSymbolName] = useState("");
-	const changeStockSymbol = (symbolName) => {
-		setSymbolName(symbolName);
+	const [selectedStockIndex, setSelectedStockIndex] = useState(-1);
+	const [symbolList, setSymbolList] = useState([]);
+	const changeSelectedStock = (index) => {
+		setSelectedStockIndex(index);
+	};
+	const updateSymbolList = (data) => {
+		setSymbolList(data);
 	};
 	return (
 		<div className="App">
 			<div className="ma-44-flex">
-				<StockList onClick={changeStockSymbol} />
-				<StockChart symbolName={symbolName} />
+				<StockList
+					changeSelectedStock={changeSelectedStock}
+					selectedStockIndex={selectedStockIndex}
+					symbolList={symbolList}
+					updateSymbolList={updateSymbolList}
+				/>
+				<StockChart
+					selectedStockIndex={selectedStockIndex}
+					symbolList={symbolList}
+				/>
 			</div>
 		</div>
 	);
