@@ -1,6 +1,5 @@
 .StockList {
-	width: 20%;
+	width: 20vw;
 	height: 100vh;
-	overflow-y: scroll;
 	background-color: lightcyan;
 }
