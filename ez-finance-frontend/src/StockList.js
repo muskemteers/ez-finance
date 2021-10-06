@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import StockItem from "./StockItem";
 import "./StockList.css";
 
@@ -57,6 +57,7 @@ const StockList = (props) => {
 					}
 				);
 		}
+		// eslint-disable-next-line
 	}, []);
 	return (
 		<div className="StockList">

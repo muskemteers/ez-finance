@@ -94,7 +94,7 @@ const StockChart = (props) => {
 					);
 			}
 		}
-	}, [props.selectedStockIndex]);
+	}, [props.selectedStockIndex, props.symbolList]);
 	if (props.selectedStockIndex === -1)
 		return (
 			<div className="StockChart" style={{ textAlign: "center" }}>

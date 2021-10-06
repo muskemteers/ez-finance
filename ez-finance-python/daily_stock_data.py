@@ -50,8 +50,8 @@ class StockData:
 
 def update_stock_data():
     stock_symbols = get_all_stock_symbols()
-    start_date = date(2021, 10, 4)
-    end_date = date(2021, 10, 5)
+    start_date = date(2021, 10, 6)
+    end_date = date(2021, 10, 6)
     print("Collecting Data for the interval: ", start_date, end_date)
     count = 0
     for stock_symbol in stock_symbols:
